@@ -5,8 +5,10 @@ import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
+import com.hazelcast.monitor.LocalExecutorStats;
 
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 
 public class ExecutorServiceExample {
 
@@ -20,23 +22,27 @@ public class ExecutorServiceExample {
 		{
 
 			IExecutorService executorService = hazelcastInstance.getExecutorService("default");
-			Runnable runnable = wrap(
-					( hz ) -> System.out.println("\n$$$$$$$$$$$\nHello from Node: " + hz.getCluster().getLocalMember().getUuid()+"\n$$$$$$$$$$$\\n"));
+			Runnable runnable = wrap(( hz ) -> System.out.println(
+					"\n$$$$$$$$$$$\nResponse from Node: " + hz.getCluster().getLocalMember().getUuid()
+							+ "\n$$$$$$$$$$$\\n"));
 			executorService.executeOnAllMembers(runnable);
+			LocalExecutorStats localExecutorStats = executorService.getLocalExecutorStats();
+			long pendingTaskCount = localExecutorStats.getPendingTaskCount();
+			while( pendingTaskCount > 0 )
+			{
+				continue;
+			}
 
 		}
 		finally
 		{
 			// Shutdown cluster
-			Hazelcast.shutdownAll();
+			//hazelcastInstance.shutdown();
 		}
 	}
 
 	private static Runnable wrap( Java8Runnable runnable )
 	{
-
-
-
 
 		return new Java8RunnableAdapter(runnable);
 	}
@@ -44,7 +50,7 @@ public class ExecutorServiceExample {
 	private static HazelcastInstance buildCluster( int memberCount )
 	{
 		HazelcastInstance hazelcastClient = Reader.getHazelcastClient();
-		return  hazelcastClient;
+		return hazelcastClient;
 		/*Config config = new Config();
 		NetworkConfig networkConfig = config.getNetworkConfig();
 		networkConfig.getJoin().getMulticastConfig().setEnabled(false);
