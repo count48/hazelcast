@@ -70,6 +70,16 @@ dependencies {
 
     // Hazelcast Test Support
     testCompile "com.hazelcast:hazelcast:$HZ_VERSION:tests"
+    //Drools and KIE
+    compile group: 'org.drools', name: 'drools-core', version: '6.5.0.Final'
+    compile group: 'org.drools', name: 'drools-compiler', version: '6.5.0.Final'
+    compile group: 'org.kie', name: 'kie-api', version: '6.5.0.Final'
+    compile group: 'org.kie', name: 'kie-internal', version: '6.5.0.Final'
+    runtime group: 'org.drools', name: 'drools-core', version: '6.5.0.Final'
+    runtime group: 'org.drools', name: 'drools-compiler', version: '6.5.0.Final'
+    runtime group: 'org.kie', name: 'kie-api', version: '6.5.0.Final'
+    runtime group: 'org.kie', name: 'kie-internal', version: '6.5.0.Final'
+
 }
 
 task collectJars(type: Copy) {

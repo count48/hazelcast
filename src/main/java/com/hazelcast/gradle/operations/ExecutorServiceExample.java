@@ -1,14 +1,8 @@
 package com.hazelcast.gradle.operations;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.NetworkConfig;
-import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
 import com.hazelcast.monitor.LocalExecutorStats;
-
-import java.util.Arrays;
-import java.util.concurrent.Callable;
 
 public class ExecutorServiceExample {
 
@@ -16,7 +10,7 @@ public class ExecutorServiceExample {
 	{
 
 		// Prepare Hazelcast cluster
-		HazelcastInstance hazelcastInstance = buildCluster(1);
+		HazelcastInstance hazelcastInstance = Reader.getHazelcastClient();
 
 		try
 		{
@@ -47,21 +41,5 @@ public class ExecutorServiceExample {
 		return new Java8RunnableAdapter(runnable);
 	}
 
-	private static HazelcastInstance buildCluster( int memberCount )
-	{
-		HazelcastInstance hazelcastClient = Reader.getHazelcastClient();
-		return hazelcastClient;
-		/*Config config = new Config();
-		NetworkConfig networkConfig = config.getNetworkConfig();
-		networkConfig.getJoin().getMulticastConfig().setEnabled(false);
-		networkConfig.getJoin().getTcpIpConfig().setEnabled(true);
-		networkConfig.getJoin().getTcpIpConfig().setMembers(Arrays.asList(new String[] { "127.0.0.1" }));
-		Maps
-		HazelcastInstance[] hazelcastInstances = new HazelcastInstance[memberCount];
-		for( int i = 0; i < memberCount; i++ )
-		{
-			hazelcastInstances[i] = Hazelcast.newHazelcastInstance(config);
-		}
-		return hazelcastInstances[0];*/
-	}
+
 }
